@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<title>es6练习</title>
+	<link rel="stylesheet" href="./es6练习.css">
+</head>
+<body>
+	
+<!-- 	<h2>let语法练习</h2> 
+	<div>
+		<h3>点击显示颜色</h3>
+		<div class="item"></div>
+		<div class="item"></div>
+		<div class="item"></div>
+	</div>
+	<script>
+		let items = document.getElementsByClassName('item');
+		for (let i = 0; i < items.length; i++) {
+			items[i].onclick = function () {
+				this.style.background = 'pink';
+			}
+		}
+	</script>
+ -->
+
+<!-- <script>
+	var tmp = 1;
+	function f() {
+		console.log(tmp);
+		if (false) {
+			var tmp = 2;
+		}
+	}
+	f();
+</script>
+ -->
+
+<!-- <script>
+	function f() {
+		var i = 1;
+		if (true) {
+			var i = 2;
+		}
+		console.log(i);
+	}
+	f();
+</script>
+ -->
+
+<!-- <script>
+	const a = 1;
+	console.log(window.a)
+	let [x = 1, y = x] = [2];
+	console.log(x,y);
+</script>
+ -->
+
+<!-- <script>
+	let {x} = {x:12};
+	console.log(x);
+	let a = Object.is(+0,-0);
+	console.log(a);
+</script>
+ -->
+
+<!-- <script>
+	let str = Object.assign(['a','b','c'],['d','e']);
+	console.log(str);
+</script>
+ -->
+
+
+<!-- <script>
+	function f({x, y} = {x:1, y:0}) {
+		console.log(`${x} ${y}`);
+	}
+
+	f({x:3,y:1})
+	function f1(a,b,c) {
+		console.log(a+'-'+b+'-'+c)
+	}
+
+	f1(1,2,3,4)
+	function f2(x, y = 2, z) {
+		let a=[x, y, z];
+		console.log(a);
+	}
+
+	f2(1,undefined,3)
+	let b = (function (a, b=1, c, d=2) {}).length;
+	console.log(b);
+
+	let x=3;
+	function f3(y=x) {
+		x=2;
+		console.log(y);
+	}
+	f3();
+
+</script>
+ -->
+
+
+<!-- <script>
+	let a=Array.from([1,2,3], x => x*x);
+	console.log(...a);
+	let b = [4,5,6];
+	let c = b.map(x => x*x);
+	console.log(...c);
+
+	let d = ['a','b','c'].fill(7, 1, 2);
+	console.log(...d);
+</script>
+ -->
+
+
+<script type="module">
+	import './例子练习/x.js';
+	import './例子练习/y.js';
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,163 @@
+<pre>
+	
+指令：
+for in遍历可枚举属性  
+for of遍历迭代器
+
+全局过滤器(可被共享):
+  在插值“{{}}”中数据的尾部添加管道符“|” (经常用于格式化文本,如字母大小写,货币千位使用逗号分隔等)
+  {{msg | filtername([arg1],[arg2])}} 
+    将msg作为参数传递给filtername进行处理,filtername可接受参数,但第一个参数为msg(注:形参需比实参多个参数作为msg)
+  写法:
+    类似methods方法,在filters内写函数filtername,将结果return出去
+      {{ msg | filtername }} 
+      filters{filtername(){return }}
+    或{{ msg | filtername }} 
+      Vue.filter('filtername',fun(){}) (注:此种写法需写在vue挂载的实例前)
+
+过滤器调用时采用就近原则,如果私有和全局名称一致则优先调用私有过滤器
+
+<div id="app">
+	<p>{{ msg1 | msgformat1}}</p>
+	<p>{{ msg2 | msgformat2('方法2','ways')}}</p>
+	<p>{{ msg2 | msgformat2('方法2','ways') | msgformat3 }}</p>
+</div>
+
+<script>
+	// 过滤器需写在Vue实例前
+	Vue.filter('msgformat1',function (ms) {
+		return ms.replace(/单纯/g,'无知')
+	})
+	Vue.filter('msgformat2',function (ms,way1,way2) {
+		return ms.replace(/单纯/g,way1+way2)
+	})
+	Vue.filter('msgformat3',function (ms) {
+		return ms+'***';
+	})
+	var vm=new Vue({
+		el: '#app',
+		data:{
+			msg1:'曾经,我也是一个单纯的少年,单纯的我傻傻的问,谁是世界上最单纯的男人',
+			msg2:'曾经,我也是一个单纯的少年,单纯的我傻傻的问,谁是世界上最单纯的男人',
+		}
+
+	})
+</script>
+
+
+自定义按键修饰符:
+  Vue.config.keyCodes.str=num
+  例: Vue.config.keyCodes.f2=113  @keyup.113=fun(){} 当f2被按下升起时触发事件
+
+自定义全局指令:
+  Vue.directive(name,{})
+  例:
+  <input type="text" v-focus>
+  <script>
+  	Vue.directive('focus',{//以下三个函数第一个参数永远为el表示被绑定的元素,el是一个原生JS对象
+  		bind:function (el) {
+  			//每当指令绑定到元素上就会触发一次此函数 元素刚绑定指令还未插入到DOM中,此时调用focus方法无效
+  			// 即此处写 el.focus()无效 因为一个元素(的行为)只有插入到DOM中才能(执行函数)获取焦点
+  			// 但样式不需插入到DOM中 因此和样式相关的写在此函数中
+  		},
+  		inserted:function (el) {  //元素插入到DOM中 函数触发一次  和行为相关的最好写在此函数中
+  			el.focus();
+  		},
+  		updated:function (el) {  //当VNode(虚拟DOM节点)更新 函数(可多次)触发
+  		}
+  	})
+  </script>	
+
+
+生命周期:
+  
+
+
+
+
+动画:
+<transition></transition>
+Vue提供的指令,把需要被动画控制的元素包裹起来
+动画分为两个时间段,即进入和离开:
+  v-enter-active(进入):又分为两个时间点
+    v-enter进入之前的起始状态
+    v-enter-to进入之后的结束状态
+  v-leave-active(离开):也分为两个时间点
+    v-leave离开之前的起始状态
+    v-leave-to离开之后的结束状态
+  注:两个时间点之间的过程即为时间段
+
+自定义动画:
+  在“<transition name='my'></transition>”加入name属性
+  再将动画指令中的前缀“v”替换为“my”即可
+
+注:使用第三方库和自定义动画均不能实现半场动画
+transition中的mode属性可设置动画进出方式 如在标签里写“mode='out-in'”
+
+transition-group:在用列表实现过渡效果时,如果需要过渡的元素是用“v-for”渲染出来的,则应用“transition-group”代替“transition”,否则无效果(即循环渲染的元素动画时用动画组代替动画)
+  两个属性:appear和tag
+  appear: 标签内添加appear可使列表在渲染时以动画方式入场(用法:直接加appear这个单词即可)
+  tag: transition-group包裹li标签渲染时会在它外层增加一个span标签,形成行内嵌套块级 因此可用tag指定渲染样式(用法: tag='ul',这样会在li外面加一个ul,原来的ul可省略不写)
+
+
+
+
+
+组件：
+  模块化:从代码逻辑角度划分,方便代码分层开发,保证每个功能模块单一
+  组件化:从UI界面角度划分,前端的组件化,方便UI组件重用
+
+如果使用“Vue.component”定义全局组件的时候组件名称使用了驼峰命名则在引用组件的时候需将大写的驼峰改为小写字母同时两个单词之间用“-”隔开
+不使用驼峰命名可不用改
+
+创建组件的三种方式以及自定义私有组件,见案例练习
+组件中可自定义自己的data数据,创建方式和实例中的data不同,但用法相同(即可使用插值表达式)
+组件的data属性值必须为一个方法(即函数),且方法内部必须返回一个对象,然后可在此对象内部定义自己的data数据
+
+
+父组件向子组件传值 通过“v-bind:parentmsg='bianliang'”和“props:['parentmsg']”配合 -->
+子组件无法访问到父组件即公用data中的数据和methods中的方法(但可访问在私有组件中自定义的)
+此外子组件访问“props[]”中的“parentmsg”的值时只可读取,不可修改 
+
+
+使用ref获取元素代替操作DOM (即代替document中的getbyid、class等方法)
+<input type="text" ref='myref'>
+<script>
+  (function () {
+    console.log(this.$refs.myref.value)
+  })()
+</script>
+
+
+路由:
+  后端路由:对于普通网站来说所有的超链接都是url地址,所有的url地址都对于服务器上的资源
+  前端路由:对于单页面应用程序来说,主要通过hash(即#号)实现不同页面之间的切换 这种由hash改变切换页面的方式叫前端路由
+    hash特点:HTTP请求中不会包含hash内容,所以单页面程序内容跳转主要由hash实现
+
+router-link标签可代替a标签 (会渲染成a标签 小知识:也可用tag属性将其改为其他标签,如“tag='span”)
+<a href="#/login"></a>
+<router-link to='/login'>登录</router-link>
+
+
+路由传参方式：
+通过$route.query
+通过
+
+
+
+路由器提供了两种机制:路由和转送
+  路由:绝定数据包从来源到目的地的路径
+  转送:将输入端的数据转移到合适的输出端
+路由表:本质为映射表,决定了数据包的指向 (映射表: 内网ip对应电脑mac(物理)地址)
+
+
+history.go(-1) 去掉#号
+设置mode:histoty 也可去掉#号 mode模式默认哈希因此有#号
+
+
+
+
+
+</pre>
+
+ 
