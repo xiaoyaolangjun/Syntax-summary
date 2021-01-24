@@ -1,0 +1,459 @@
+<pre>
+第一章:ES6中的类和对象
+第1节:面向对象与面向过程
+  1.面向对象:
+    定义:把事务划分为多个对象,以对象功能来划分并解决问题
+    特性:封装性、继承性、多态性
+    优点:灵活、代码可复用、易于维护和开发,基于三大特性设计出的系统耦合度较低
+    缺点:性能比面向过程低
+    思维特点:
+      抽取对象的共用属性和行为封装成类
+      对类进行实例化,获取类的对象
+  2.面向过程
+    定义:依据分析好的步骤,按照步骤解决问题
+    优点:性能高适合跟硬件紧密联系的东西,例如单片机的编程
+    缺点:不如面向对象易于维护、复用和扩展
+
+第2节:class
+  1.创建步骤:
+    通过class关键字创建,类名首字母最好大写
+    class里面首先有构造函数constructor
+      constructor函数接受实例化对象传递的实参,同时返回实例对象
+      只要使用new实例化对象时就会自动调用constructor函数,即使不写也会自动生成
+      注:函数方法之间无需加“,”进行分隔
+    其次使用new进行实例化
+    class a{
+      constructor(){},
+      otherMethods(){}
+    }
+
+  2.继承:
+    子类使用“extends”关键字继承父类
+      如: class Father{}  class Son extends Father{} 
+    super方法:
+      子类进行实例化传参时,会先将实参传入子类的构造函数constructor,若子类调用的父类方法中使用到了实参,则必须将实参再传递给父类,否则方法调用不了 故使用super方法将实参传递给父类
+      注:super方法必须写到子类this之前,否则报错
+    继承中的属性和方法遵循就近原则:
+      子类实例化输出方法时先去子类中查找,若无则去父类中查找
+    子类方法中可调用父类普通函数:
+      通过“super.methodName()”方式
+    注意事项:
+      ES6无变量提升,类需先定义才能再进行实例化
+      类里面共有的属性和方法一定要加this进行使用
+      调用方法时若加“()”表示立即调用
+        如: btn.onclick=change 当按钮点击时调用方法,则方法不可加括号否则是立即调用
+    例:
+      <script>
+        class Father{
+          constructor(x,y){
+            this.x = x;
+            this.y = y;
+          }
+          test(){
+            const sum = this.x + this.y;
+            console.log(sum);
+          }
+        }
+        class Son extends Father{
+          constructor(a,b,c,d){
+            super(a,b); //将需要的形参传递给父类并后续调用父类的方法 super还必须写在子类this之前否则报错
+            this.c = c;
+            this.d = d;
+          }
+          te(){
+            super.test(); // 3 子类方法中调用父类普通函数
+            console.log(this.c * this.d);
+          }
+        }
+        const son = new Son(1,2,3,4);
+        son.test(); // 3
+        son.te(); // 12
+      </script>
+
+  3.this指向
+    constructor中的this指向的是实例化对象(因为实例化时会自动调用constructor函数)
+    方法中的this指向它的调用者,即谁调用就指向谁
+
+
+第二章:构造函数和原型
+第1节:利用构造函数创建对象
+  1.构造函数:特殊的函数主要用来初始化对象,即为对象成员变量赋初值,与new一起使用
+    一般将对象中共用的属性和方法放抽取到这个函数中
+  2.new在执行时的过程:
+    创建空对象->让this指向这个空对象->执行构造函数中的代码给对象添加属性及方法->返回这个新对象(故构造函数中不需要再手写return)
+  3.构造函数成员:
+    实例成员:在函数内部通过“this”添加的属性或方法 
+      只能通过实例化的对象来访问
+    静态成员:直接通过构造函数名添加的属性或方法 
+      只能通过构造函数名来访问
+  例:
+  <script>
+    function Person(na) {
+      this.na = na; // 实例成员 只能通过 “xiao.name”来访问name  
+    }
+    let xiao = new Person("逍遥")
+    Person.sex = man; // 静态成员 只能通过Person来访问sex
+  </script>
+  4.构造函数缺点:
+    构造函数内部创建方法时,方法为函数,每一个实例化的对象都会为其创建一个新的地址存放函数,浪费内存
+
+第2节:原型
+  1.构造函数原型:prototype
+    JS规定每个构造函数都有一个prototype属性指向另一个对象,这个对象的所有属性和方法都会被构造函数所拥有
+      故可将那些不变的方法直接定义在prototype对象上,供所有实例共享
+    原型:就是一个对象 也称prototype为原型对象
+    作用:共享方法
+  2.实例对象原型:__proto__(前后均为两杠)
+    实例对象都会有一个属性“__proto__”指向构造函数的“prototype”原型对象
+    prototype属于构造函数的显式原型 
+    __proto__属于实例对象的隐式原型,二者相等 但它只是内部指向原型对象“prototype”,不可以使用它
+    对于实例对象的方法,先从实例对象查找,如果没有找到由于“__proto__”就会去原型对象上查找
+    例:
+    <script>
+      function Person() {
+      }
+      Person.prototype.skill = function () {
+      }
+      let xiao = new Person();
+      console.log(xiao.__proto__ == Person.prototype); // true
+    </script>
+  3.constructor构造函数:
+    对象原型(__proto__)和构造函数(prototype)原型对象里面都有一个属性constructor,称其为构造函数
+      因为它指回构造函数本身
+    constructor主要用于记录该对象引用于哪个构造函数,它可让原型对象重新指向原来的构造函数
+    很多情况下需要手动利用constructor属性指回原来的构造函数
+    例:
+    <script>
+      function Person() {
+      }
+      Person.prototype.sing = function () {
+      }
+      Person.prototype.movie = function () {
+      }
+      // 此种写法是在原型的基础上(原型有constructor属性)添加方法
+
+      Person.prototype = {
+        constructor：Person,
+        sing(){},
+        movie(){}
+      }
+      // 此种写法为重写原型,即将原型的属性清空了再添加 故需手动添加上constructor属性
+
+      let xiao = new Person();
+    </script>
+  4.利用原型对象扩展内置对象方法:
+    注:只可使用“.”方法追加,不可使用对象的方式覆盖
+    <script>
+      Array.prototype.sum = function () {
+        let sum = 0;
+        for (let i = 0; i < this.length; i++) {
+          sum += this[i]
+        }
+        return sum;
+      }
+      let arr1 = [1,2,3];
+      let arr2 = new Array(123);
+      console.log(arr1.sum()); // 6
+      console.log(arr2.sum()); // 6 
+    </script>
+
+第3节:构造函数、原型对象及实例对象之间的关系
+  1.构造函数通过“.prototype”指向原型对象“prototype” 构造函数通过new生成实例
+  2.原型对象“prototype”通过“.constructor”指向构造函数 原型对象“prototype”等于实例对象“__proto__”
+  3.实例对象“__proto__”等于“prototype”,故也可通过“constructor”指向构造函数
+  注:原型对象与实例对象的存储地址不同
+
+第4节:原型链
+  在第3节的基础上增加了Object,Object为所有构造函数的祖先  
+  1.原型对象“prototype”也有属性“__proto__”且指向Object的原型对象“prototype”
+  2.Object原型对象“prototype”通过“.constructor”指向Object构造函数
+    通过“.__pro__”指向null
+  3.Object构造函数又通过“.prototype”指向Object的原型对象“prototype”
+  4.关系网:
+    实例对象 <--构造函数(.prototype)--> <--(.constructor)原型对象prototype <--(.__proto__)实例对象
+    null <--(.__proto__)Object原型对象prototype(.constructor)--> <--(Object.prototype)Object构造函数
+    原型对象prototype(.__proto__)--> Object原型对象prototype
+  5.JS成员查找机制:
+    当访问一个对象的属性或方法时,根据作用域链
+      先自身查找-->prototype原型-->Object原型对象-->直到null
+    因此在此链上只要有所需的属性或方法对象就可拿来用,但遵循就近原则 (可看作继承的原理)
+  6.原型对象中this的指向
+    构造函数中通过this添加的属性以及构造函数的原型函数(方法)中的this均指向实例对象
+    即构造函数中的this指向它的调用者
+
+第5节:继承
+  1.组合继承:通过构造函数加原型对象模拟实现继承
+  2.借用构造函数继承父类型属性
+    核心原理:通过call方法将父类型中的this指向子类型的this,实现子类型继承父类型的属性
+  例:
+  <script>
+    function Parent(name,age) {
+      this.name = name;
+      this.age = age;
+    }
+    Parent.prototype.sing = function () {
+      console.log('子构造函数不能只通过call方法拿到父构造函数原型的属性及方法')
+    }
+    function Son(na,ag,score) {
+      Parent.call(this,na,ag)
+    }
+    // Son.prototype = Parent.prototype; //不可直接赋值,因为这样为浅拷贝,修改子构造函数原型上的方法父也会改变
+    Son.prototype = new Parent(); // 原型链中实例对象可通过“.__proto__”指向原型故子对象原型可间接指向父对象原型
+    Son.prototype.constructor = Son; 
+    // 需将Son的constructor再指回Son,因为上一步new时子原型对象中的所有内容被覆盖了 因此赋值时注意等号左边仅仅是个变量还是类似原型对象这种有隐含属性的对象
+    Son.prototype.exam =function () {
+      console.log('此时给子构造函数原型已实现继承并能追加自己独有的方法');
+    } 
+    let son = new Son("武",18,99);
+  </script>
+
+第6节:class的本质
+  1.类有原型对象prototype,类的所有方法其实都定义在了prototype属性上
+    可通过原型对象添加方法,原型对象中有constructor指向类本身
+  2.类创建的实例对象有“__proto__”原型指向类的原型对象
+  3.类的本质还是函数,类其实是语法糖
+
+
+第三章:ES5新增的方法
+第1节:数组迭代(遍历)方法
+  1.forEach()
+    array.forEach(function(value,index,arr){})
+    数组array中的每一个元素依次执行函数 value当前值 index当前索引 arr数组array本身
+
+  2.filter()
+    array.filter(function(value,index,arr){return ...})
+    filter会新建一个数组,数组array中的元素依次执行函数,将符合条件的元素筛选出放入新数组中
+    例:
+    <script>
+      let arr = [1,2,3];
+      let newArr = arr.filter(function (value,index,arr) {
+        return value >= 2;
+      })
+      console.log(newArr); // [2,3]
+    </script>
+  3.some()
+    array.some(function(value,index,arr){})
+    查找数组中是否有符合条件的元素,如果查找到就返回true,否则返回false 查找到首个满足条件的元素便会终止
+    例: 
+    <script>
+      let arr = [1,2,3];
+      let boo = arr.some(function (value,index,arr) {
+        return value == 3;
+      })
+      console.log(boo); // true
+    </script>    
+    注:some()方法里return的结果是true代表已找到所需元素,无需再遍历 否则会遍历完整个数组
+  4.trim()
+    str.trim() 去除str左右两边的空格,通常用于输入表单的验证
+  5.Object.defineProperty()
+    Object.defineProperty(obj,pro,description) 定义新属性或修改原属性
+      description写为对象“{}” 里面有四个属性值 
+        “value:” 设置属性“pro”的值
+        “writable:true/false” 属性pro的值是否可重写,默认false
+        “enumerable:true/false” 属性pro能否被枚举(即遍历),默认false
+        “configurable:true/false” 属性pro是否可被删除或属性里的特性(指的是writable等而非pro的属性值)能否被再次修改,默认false
+
+
+第四章:函数
+第1节:函数
+  1.所有的函数都是Function的实例,如同所有的对象都是Object的实例,此外函数也是对象
+  2.如同原型链基础:
+    构造函数Function通过“.prototype”指向原型对象(通过.constructor反指回构造函数)
+    构造函数可生成函数对象实例,而对象实例又可通过__proto__指向原型对象
+  3.函数调用方法:
+    普通函数: fun()/fun.call()
+    对象方法: obj.fun()
+    构造函数: new Fun()
+    绑定事件函数: btn.onclick=fun(){}
+    定时器函数:setInterval(fun(){},times)
+    立即执行函数:(fun(){})()
+  4.函数内this指向:
+    普通函数:this指向window
+    对象方法:this指向该方法所属对象
+    构造函数:this指向实例对象 原型对象里的方法也指向实例对象
+    绑定事件函数:this指向绑定事件对象
+    定时器函数和立即执行函数:this均指向window
+
+第2节:改变函数内部this指向的方法
+  1.call()
+    作用:调用函数以及改变函数中this的指向
+    如: fun.call(str,实参,实参) 即调用了fun函数并且fun中的this指向str
+    <script>
+      function fun(x,y) {
+        console.log("武");
+        console.log(x + y);
+      }
+      let person = {name: 'xiao'};
+      fun.call(person,1,2);
+    </script>
+    注:call()方法只是调用了父构造函数,this指向发生改变
+    不是真正的继承,它只能使用父构造函数中的属性,原型对象中的属性和方法子类依然拿不到
+  2.apply()
+    使用方法和call()方法相同,只是传参时参数为数组不为单个参数
+    主要应用:借助数学内置对象求最大/小值
+    <script>
+      let arr = [1,2,3];
+      let newArr = Math.max.apply(Math,arr);
+      console.log(newArr); // 3
+    </script>
+  3.bind()
+    作用:不调用函数,只改变原函数this指向并返回新函数
+    如: let newfun = fun.bind(str,实参,实参)
+    <script>
+      let obj = {age:18};
+      function fun(a,b) {
+        console.log(this);
+        console.log(a+b);
+      }
+      let fu = fun.bind(obj,1,2);
+      fu(); // obj 3
+    </script>
+    应用:某些函数不需立即调用但调用时又需改变函数内this指向
+    例:禁用某个按钮,一定时间后启用
+    <script>
+      btn.onclick = function () {
+        this.disabled = true;
+        setTimeout(function () {
+          this.disabled = false;  //定时器中的this指向window,bind调用时通过bind改变this指向
+        }.bind(this),2000)
+      }
+    </script>
+
+第3节:严格模式
+  1.定义:即在严格条件下运行JS代码
+  2.严格模式对JS做的更改:
+    消除JS语法一些不合理之处、不安全之处
+    提高编译效率,加快运行速度
+    禁用一些未来可能用到的语法 如一些关键字不可做为变量名
+  3.开启严格模式:
+    脚本(script标签)开启严格模式:在标签内首行写入“'use strict'”
+    函数开启严格模式:在函数内部首行写入“'use strict'”
+    即严格模式只在其相应的作用域内有效,写在全局全局有效,写在函数体内则单个函数内有效
+  4.严格模式下的变化:
+    变量需先声明再使用
+    不可使用delete删除已声明好的变量
+    全局作用域中的this不再指向window而是undefined
+    构造函数不加new去调用则报错 因为构造函数在全局作用域下创建和使用时this指向undefined
+      let str = Fun()  // 报错 
+      let str = new Fun()  // 正常 
+    定时器中的this仍指向window
+    函数:
+      小括号内的形参不可重名
+      函数必须声明在顶层,不可在非函数的代码块内声明函数,即不可在if、for等“{}”内写函数
+  5.高阶函数:对其他函数进行操作的函数,它接受函数作为参数或将函数作为返回值输出
+
+第4节:闭包
+  1.变量作用域:
+    函数内部可使用全局变量
+    函数外部不可使用局部变量
+    函数执行完后夲作用域内局部变量会销毁
+  2.闭包:有权限访问另一个函数作用域中变量的函数
+  例:
+  <script>
+  function fun() {
+    let num = 10;
+    return function fn() {
+      console.log(num);
+    }
+  }
+  let f = fun(); //此时 f=fn(){console.log(num)}
+  f(); // 10   另:由于形成了闭包,函数f若不调用则num会一直存在不被销毁
+  </script>
+  3.作用:延伸变量作用范围
+  4.面试题:使用闭包点击li显示其索引
+    核心:写一个立即执行的匿名闭包函数
+  5.异步任务包含三种:
+    回调函数:定时器中的回调、事件中的回调、ajax中的回调
+
+第5节:递归
+  1.定义:一个函数在内部可以调用本身,那么这个函数就是递归函数
+    递归作用和循环效果一样,但递归容易发生栈溢出错误(stack overflow),故需加退出条件return
+  2.求阶乘:
+    <script>
+      function fun(i) {
+        if (i == 1) {
+          return 1;
+        }
+        return i * fun(i-1);
+      }
+      console.log(fun(3)); // 6
+    </script>
+  3.斐波那契数列:
+    第一二项值为1,从第三项开始,当前项值等于前两项之和 如: 1 1 2 3 5 8 13...
+    随意输入第n项,就可求得n所对应的值
+    <script>
+      function fun(i) {
+        if (i ==1 || i == 2) {
+          return 1;
+        }
+        return fun(i-1) + fun(i-2);
+      }
+      console.log(fun(7)); // 13
+    </script>
+
+第6节:浅拷贝
+  1.浅拷贝语法糖: Object.assign(newobj,obj) 将obj浅拷贝给newobj
+
+
+第五章:正则表达式
+第1节:基础概念
+  1.正则作用:
+    检索、替换符合某个模式的文本
+    过滤替换敏感词
+    从字符串中提取特定部分内容
+  2.特点:
+    灵活性、逻辑性和功能性较强
+    可用极简单的方式达到字符串的复杂控制
+    实际开发一般都是复制已写好的,但可根据实际情况修改
+
+第2节:创建及检测正则
+  1.利用RegExp对象创建:
+    let obj = new RegExp(/regexp/)
+  2.利用字面量创建(推荐使用):
+    let obj = /regexp/
+  注:创建的正则里无论是数字型还是字符型都无需加引号
+  3.test()方法:
+    检测字符串是否符合正则要求
+    regexp.test(str) 检测字符串str是否符合创建的正则regexp要求,返回值true/false
+
+第3节:边界(限定)符
+  1.^ 匹配行首的文本
+  2.$ 匹配行尾的文本
+  3.二者组合则为精确匹配 即文本必须和边界符内的内容完全一致,即使文本重复也不行
+
+第4节:字符类
+  1. /[reg]/ 只要包含reg中的任一个字符都可以
+  2. /[-]/ 范围连接符
+  3./[^]/ 中括号内有“^”则代表取反 别和边界符弄混
+
+第5节:量词符
+  作用:设定某个模式出现的次数
+  1. * 大于等于0次
+  2. + 大于等于1次
+  3. ？0次或1次
+  4. {n} 重复n次
+  5. {n,} 大于等于n次
+  6. {n,m} 大于等于n且小于等于m次
+
+第6节:预定义类(即某些常见模式的简写)
+  1. \d  匹配0-9之间的任一数字 等同于[0-9]
+  2. \D  等同于[^0-9]
+  3. \w  匹配任意的数字、字母和下划线 等同于[A-Za-z0-9_]
+  4. \W  等同于[^A-Za-z0-9_]
+  5. \s  匹配空格(包括换行符、制表符、空格符等) 等同于[\t\r\n\v\f]
+  6. \S  等同于[^\t\r\n\v\f]
+
+第7节:replace
+  1.str.replace(regexp/substr,replacement)
+    将str中的substr字符串或正则表达式regexp替换为replacement
+
+</pre>
+
+
+
+
+
+
+
+
+
