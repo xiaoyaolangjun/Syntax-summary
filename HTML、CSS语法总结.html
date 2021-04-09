@@ -10,11 +10,11 @@ HTML
   解决了跨浏览器问题
   新增了多个特性:
     新增语义化标签如:header nav section article aside
-	新的表单控件如:email time url calendar date search;对传统的控件进行升级:增加了placeholder属性
-	用于绘画的canvas
-	用于媒介回放的audio和video
-	对本地存储更好的支持
-	增加了地理位置、拖曳、摄像头等API
+  	新的表单控件如:email time url calendar date search;对传统的控件进行升级:增加了placeholder属性
+  	用于绘画的canvas
+  	用于媒介回放的audio和video
+  	对本地存储更好的支持
+  	增加了地理位置、拖曳、摄像头等API
   用户优先的原则:
     安全机制设计,对不同的API(Application Programming Interface应用程序编程接口)都通用
     表现和内容分离
@@ -36,6 +36,8 @@ HTML
      charset="utf-8"国际化编码   还有gbk和gb2312 
      name="" content="" name提供搜素内容名称,content对应搜索内容值 
      如 name="keywords" content="html,css,vue"(注意逗号分隔) 
+     unicode 国际编码
+     (UTF-8是unicode的升级版 Universal Character Set/Unicode Transformation Format，是针对Unicode的一种可变长度字符编码)
    link(引用外部标记)标记属性:
      href:url 
      rel:"stylesheet(CSS样式表)"/"shortcut icon(图标显示)" 
@@ -45,6 +47,7 @@ HTML
  4.文本控制标记: 
    标题和段落
      标题 h1-h6 一个页面只能用一个h1常被用作logo h元素拥有确切语义,需慎重选择 
+       h1:Logo,h2:副标题,h3:版块标题,h4:版块内容标题,h5、h6:版块嵌套中的版块使用
      段落标记P  水平线标记hr 
    文本格式化标记: 
      <b><strong>粗体显示 <i><em>斜体 <del>删除线 <ins>下划线 sub/sup下上标 <q>双引号 mark文字添加背景颜色  
@@ -57,7 +60,7 @@ HTML
      alt(图片不显示时替换的文本;搜索引擎也会根据alt内容来分析网页内容)  
      相对/绝对路径: 上一级:"../" 
    超链接标记<a>:
-     href:url(链接到的地址)  
+     href(hyperText reference):url(链接到的地址)  
      暂时未确定链接目标,将url改为"#"表示空链接点击会跳转到页面头部  url改为"javascript:;"则不进行任何跳转
      target:_self(在当前窗口打开)  _blank(新建窗口打开) 
      锚点链接:可快速定位到链接内容 
@@ -68,15 +71,15 @@ HTML
 第二章:页面元素及属性
 
 第1节:列表元素
-  1.ul(无序) 需嵌套li,否则无效 type:disc/circle/square 
-  2.ol(有序) 需嵌套li,否则无效 type:123/ABC/iii/III start(从哪开始)/reversed(逆序,默认值为ture) 
+  1.ul(unorder list 无序列表) 需嵌套li,否则无效 type:disc/circle/square 
+  2.ol(order list 有序列表) 需嵌套li,否则无效 type:123/ABC/iii/III start(从哪开始)/reversed(逆序,默认值为ture) 
   3.dl(自定义) 嵌套一个dt(要解释的名词) dt后跟一或多个dd(对dt名词解释,会有缩进效果) 
   4.list-style-type 设置列表项标志的类型 none/disc(默认,实心圆)/circle(空心圆)/square(实心方块)
     decimal(数字)/decimal-leading-zero(0开头的数字)/lower-roman(小写罗马数字)/
     upper-roman(大写)/lower-alpha(小写英文字母)/upper-alpha(大写)...日文韩文等查手册 
   5.list-style-position 列表项标志的位置(即当列表某一项文字过长要换行时,换行文字是否和标志对齐) 
     inside/outside(默认 文本不和标志对齐) 
-  6.list-style-image 图像设置为列表项标志 none/url()  注：需用相对路径,绝对路径无效 
+  6.list-style-image 将图像设置为列表项标志 none/url()  注：需用相对路径,绝对路径无效 
   7.list-style 以上三个属性简写
 
 第2节:结构元素
@@ -134,7 +137,7 @@ CSS部分
   4.Opera 内核:Blink 前缀:-o
 
 第2节:样式规则
-  格式:选择器{属性1:属性值1;} 
+  格式:选择器{属性:属性值;} 
   选择器区分大小写,属性和值不区分,但通常都采用小写 
   多个属性之间用分号隔开 
   若属性值由多个单词组成且中间包含空格,则需对它加双引号 
@@ -197,15 +200,18 @@ CSS部分
       HSLA同rgba增加了透明度
   2.透明度
     opacity:0-1之间的值,值越小越透明 (整个标签里连带内容的透明度全都改变)
-    rgba()元素的透明度进行改变,但内容不会更改
+    rgba()元素(即整个容器)的透明度进行改变,但里面的内容不会更改
   3.letter-spacing:字符间距
     normal/px/em/-px/-em  英文每个字母/中文每个文字被隔开
   4.word-spacing:单词间距(用法同letter-spacing)  连写的中文等同于一个单词
   5.line-height:行高(即行间距)
-    px/em/%
+    normal/数字/百分比/px/em (行高分为三部分,上间距、字高和下间距)
+    其中只有px为固定值其他均为相对值
     行高继承:body{font:12px/1.5 Microsoft yahei}
       父元素设置了字体大小及行高后,子元素若设置了font-size,则行高为1.5*fz否则继承父元素为12*1.5 
     优势:子元素可根据自身文字大小自动调整行高。
+    字体不同默认行高则不同,故需重置行高
+    由于继承特性行高写时最好用数字表示
   6.text-transform:文本转换
     none默认/capitalize首字母大写/uppercase全部字符转为大写/lowercase
   7.text-decoration:文本装饰
@@ -271,7 +277,7 @@ CSS部分
     图层切图:找到所在图层,右击-导出;很多情况下需要将多个图层合并为一个再将其切出(合并后无法拆分,记得备份)
     切片切图:用切片选中后,单击 文件-导出-存储为web-png/jpg等格式-保存
       注:在保存路径时注意将最下方的“所有切片”改为“选中的切片”
-      此外在切透明图片时将背景改层关掉,再切为png格式,就可切出透明图
+      此外在切透明图片时将背景层关掉,再切为png格式,就可切出透明图
   3.插件切图:cutterman
   4.图片底侧默认会有空白缝隙,原因是行内块元素会和文字基线对齐 解决方法:
       修改对齐方式 “verticial-align:middle/top/bottom”等(推荐使用)  
@@ -364,6 +370,7 @@ CSS部分
   1.div最大意义:配合float,实现网页布局,即DIV+CSS网页布局 
   2.盒子总宽:width+左右padding+左右border+左右margin
   3.盒子总高:height+上下......
+  4.div默认宽度等同屏幕宽,需添加宽度才能给它加左右外边距
 
 第2节:样式属性
   1.边框属性:
@@ -373,15 +380,15 @@ CSS部分
     border:width style color  (综合属性,顺序随意) 
     border-radius: h(水平半径)/v(垂直半径) (注:此为四个角的综合属性,可分别设置四个角的大小) 
     border-image:  
-        border-image-source(图像来源路径): url()
-        border-image-slice(边框背景图分割方式): 数值或百分比,不能带px(复合数值,大小代表往里进像素大小)
-        border-image-width(边框宽度): px
-        border-image-outset(边框背景图的扩展): px (边背景向盒子外部延伸距离)
-        border-image-repeat(边框图像平铺方式): 
-            stretch(默认,拉伸)/repeat(重复铺满)/round(调整图片进行铺满)
-            值可复合两个,如stretch round即x向拉伸y向铺满,调整顺序效果不同
-        border-image(复合属性):source slice/width/outset repeat 
-          用法有注意的地方 如url() 30 /30px /40px round,即分割方式、宽度与扩展之间需用“/”分开 
+      border-image-source(图像来源路径): url()
+      border-image-slice(边框背景图分割方式): 数值或百分比,不能带px(复合数值,大小代表往里进像素大小)
+      border-image-width(边框宽度): px
+      border-image-outset(边框背景图的扩展): px (边背景向盒子外部延伸距离)
+      border-image-repeat(边框图像平铺方式): 
+        stretch(默认,拉伸)/repeat(重复铺满)/round(调整图片进行铺满)
+        值可复合两个,如stretch round即x向拉伸y向铺满,调整顺序效果不同
+      border-image(复合属性):source slice/width/outset repeat 
+        用法有注意的地方 如url() 30 /30px /40px round,即分割方式、宽度与扩展之间需用“/”分开 
   2.边距
     padding:上右下左 
     margin:上右下左
@@ -397,12 +404,15 @@ CSS部分
     outline-width/outline-style/outline-color
     outline:复合属性,用法同border
     outline-offset:轮廓线距边框距离
+  6.offsetLeft:到最近的已定位的父元素左侧的距离(即到父元素左padding的距离)
+    offsetWidth: 即width+左右padding+border
+    clientWidth: width+左右padding
 
 第3节:背景属性
   1.background-color(颜色):transparent(默认透明色)
   2.background-image(背景图像):url()
   3.背景与图像透明度:
-    rgba(r,g,b,alpha) alpha介于0(完全透明)和1(完全不透明) (仅元素透明度变化,里面的内容不变化)
+    rgba(r,g,b,alpha) alpha介于0(完全透明)和1(完全不透明) (仅元素盒子透明度变化,里面的内容不变化)
     opacity:0~1 (元素和里面内容的透明度均会发生变化)
   4.background-repeat(图像平铺方式):repeat-x/repeat-y/repeat/no-repeat
   5.background-position(图像位置):
@@ -438,7 +448,7 @@ CSS部分
 第1节:浮动
   1.传统网页布局三大方式:标准流(标签按照规定好的默认方式排列)、浮动、定位
   2.浮动:元素脱离文档流的控制移动到父元素指定位置
-      特性:只要添加浮动属性,元素就会具有行内块元素的特点 
+    特性:只要添加浮动属性,元素就会具有行内块元素的特点 
       行内元素添加了浮动,不需进行display转换就可给宽高
       如果块级盒子没有设置宽度,则默认和父元素一样宽;但当添加浮动后,其宽度由里面的内容撑开
       浮动的盒子只会影响它后面的标准流;当一个标准流后面的盒子浮动后,浮动的盒子会贴在它后面而不会浮在其左右,因为标准流会独占一行
@@ -450,8 +460,8 @@ CSS部分
   5.清除浮动方法:
     1.在结构父元素结尾处添加空p/div/hr等标记,再对标记应用“clear:both” 缺点:如果布局复杂会添加较多无用标记
     2.在父元素样式表里添加“overflow:hidden/auto/scroll”,浏览器自动检查浮动区域高度 缺点:超出部分被隐藏
-    3.利用伪类在样式表里给父元素添加空元素“after{content:"";display:block;clear:both}”  为了兼容IE6、7,父元素还需添加“{*zoom:1;}”
-    4.双伪元素清除浮动“.clearfix:before,.clearfix:after{content:"",display:table} .clearfix:after{clear:both;} .clearfix{*zoom}”
+    3.利用伪元素在样式表里给父元素添加空元素“after{content:"";display:block;clear:both}”  为了兼容IE6、7,父元素还需添加“{*zoom:1;}”
+    4.双伪元素清除浮动“.clearfix:before,.clearfix:after{content:"",display:table} .clearfix:after{clear:both;} .clearfix{*zoom:1}”
 
 第2节:overflow(溢出):
   1.visible:溢出的元素不被修剪
@@ -480,6 +490,7 @@ CSS部分
   13.边偏移含义:定位后子元素相对父元素边线的距离
     left/right/bottom/top 
     left和right冲突则以left为准,top和bottom冲突以top为准
+  14.设置了定位position:absolute和浮动float属性后,其属性会自动转换为inline-block
 
 第4节:元素类型与转换
   1.类型
@@ -494,6 +505,7 @@ CSS部分
       (注:a标签内不可再嵌套a)
     特殊元素:img、input td可对其设置宽高和对齐等属性 (可被称为行内块元素)
       行内元素通常嵌套在块元素中,但块元素不可嵌套在行内元素中
+      行内块元素或文本类元素包含文本,外面的文字就会和里面的文字底对齐,若无文本则和元素底对齐
   2.display(转换):
     inline: 转换为行内元素,大小自适应,不换行
     block:转换为块元素,同时还有显示元素的意思
@@ -509,11 +521,14 @@ CSS部分
     2.父元素设置“display:table”子元素设置“display:table-cell;vertical-align:middle”
     3.计算margin值
     4.元素设置“display:inline-block;vertical-align:middle”
-  2.水平居中
+    5.使用弹性盒“display:flex; align-items:center”
+  2.水平居中 
     1.盒子边缘至父中间后再偏置自身一半
     2.父元素设置“display:inline-block;text-align:center”
     3.计算margin值
     4.margin:0 auto
+    5.绝对定位后left/top各50%,再translate(-50% -50%)
+    6.父元素设置“display:flex; justify-content:center”
 
 
 第七章:高级应用
@@ -570,7 +585,7 @@ CSS部分
 第1节:支持条件
   1.编解码器:音视频原始数据较大,传输时需对其进行编解码
      视频: H.264/Theora/VP8  音频: AAC/MP3/Ogg
-  2.视频格式
+  2.视频格式 
     Ogg:带有Theora视频编码和Vorbis音频解码的Ogg文件 
     MPEG4(MP4):带有H.264视频编码和AAC音频编码的MPEG4文件
     WebM:带有VP8视频编码和Vorbis音频编码的文件
@@ -618,7 +633,7 @@ CSS部分
   1.action:url 表单提交到服务器的地址
   2.method:get/post 提交方法 
     get:一段传输,保密性差,数据量有限
-    post:分段传输,保密性好,无数据量限制）
+    post:分段传输,保密性好,无数据量限制
   3.name:指定表单名称
   4.autocomplete:on/off 记录输入框的输入记录 
   5.novalidate:true/false 取消对表单提交时的检查
@@ -650,7 +665,7 @@ CSS部分
 
 第3节:input元素及属性
   1.type: 
-    text(单行文本框)/password/radio/checkbox/button/submit/reset/image(图片式提交按钮)/hidden(隐藏域)/file/email/url/number/range/search/color/(date,month,week...)/tel/number(附加min max step value)/range/color/radio/checkbox
+    text(单行文本框)/password/radio/checkbox/button/submit/reset/image(图片式提交按钮)/hidden(隐藏域)/file/email/url/range/search/color/(date,month,week...)/tel/number(附加min max step value)
 	  checkbox(添加name和value属性且name值相同value值不同)
 	  radio(需添加name和value属性且name属性为同一个值)
   2.name/value/size控件宽度
@@ -666,7 +681,6 @@ CSS部分
   12.min、max、step:输入框所允许的最小/大值及间隔
   13.placeholder: 提示信息,输入框获取焦点时提示信息则消失
   14.required:required  填写内容为空则无法提交
-
 
 第4节:其他表单元素
   1.button:
@@ -684,6 +698,7 @@ CSS部分
       option: selected='selected' 默认被选中
   4.datalist:下拉菜单(嵌套option效果同select)
     和input配合使用,id值需和input的list属性绑定
+    value值若和标签值不同,google浏览器中会将value值和标签值都显示出来,firefox则只显示标签值
   5.label元素: 用来为input元素定义标注并与之关联
     用法: 
       for属性绑定input的id值
@@ -739,7 +754,7 @@ CSS部分
     子元素添加“flex:份数”,还可指定“min/max-width”使其在一定宽度便不再伸缩
   2.布局方向:“flex-direction:column(列)/row(行)”
     水平方向:
-      父元素添加justcify-content:flex-start(子元素左对齐)/flex-end(右)/(center居中)/space-between(两边贴近两端,中间的均分空白区域)/space-around(相当于给每个盒子添加了margin)
+      父元素添加justcify-content:flex-start(子元素左对齐)/flex-end(右)/(center居中)/space-between(两边贴近两端,中间的均分空白区域,空白留在各个元素之间)/space-around(空白留在各个元素两边,相当于给每个盒子添加了margin)
     垂直方向:
       父元素添加align-items:flex-start(上对齐)/flex-end(底)/center(居中)/stretch(在子元素不给高度的前提下,子元素高度继承父元素)
     是否换行:
@@ -831,14 +846,16 @@ CSS部分
 	3.文本属性：color/font/text-decoration/text-align/vertical-align/white-space/break-word
 	4.其他属性:content/cursor/border-radius/box-shadow/text-shadow/background:linear-gradient...
 
-第2节:BFC
-	1.bfc是一个独立的渲染区域只有块级元素参与,它规定了内部元素如何布局与外部无关,说白了bfc就是一个封闭的区域
+第2节:BFC(Block Formatting Context)
+  1.bfc是一个独立的渲染区域只有块级元素参与,它规定了内部元素如何布局与外部无关
+    说白了bfc就是一个封闭的区域
+    触发bfc后,bfc内部元素即使浮动也不会影响外部,同理外部也影响不到内部
 	2.触发BFC的属性:
-	  块级元素具有bfc条件，属性display:block(此为块元素的默认值无需给块添加)/list-item/table 使元素具有条件(注：仅是具有bfc条件,还不能触发)
-	  1.position不为absoluted或fixed
+	  块级元素具有bfc条件,属性display:block(此为块元素的默认值无需给块添加)/list-item/table 使元素具有条件(注:仅是具有bfc条件,还不能触发)
+	  1.position为absoluted或fixed
 	  2.display为inline-block/table-cell/table-caption/flex/inline-flex
 	  3.float属性不为none
-	  4.overflow不为visible
+	  4.overflow不为visible,可为hidden auto scroll
 	3.特性
 	  1.内部盒子从顶端垂直排列
 	  2.内部盒子margin会合并,即两个盒子都有margin则会取其最大的一个
@@ -847,35 +864,42 @@ CSS部分
 	  4.计算BFC高度时，自然也会检测浮动盒子高度
 	4.用途
 	  1.清除子元素浮动  常见用法：父元素设置“overflow：hidden”
-	  2.解决外边距合并问题:
+	  2.解决外边距重叠合并问题:
 	    在一个总BFC内两个子元素产生外边距合并，此时给其中一个再嵌套一个父元素盒子，使其处于不同辈分。这样两个盒子就不再处于同一个BFC下了。(注：再嵌套的父盒子需加“overflow：hidden”)
-	  3.制作右侧自适应盒子（其特性3）
-
+    3.解决盒子塌陷问题
+    4.解决文字会环绕在浮动元素周围的问题 
+	  5.制作右侧自适应盒子（其特性3）
 
 第3节:外边距合并(margin塌陷)
 	1.父子之间
 	  子元素设置的margin-top值比父元素的margin-top值大时,会造成父元素以子元素margin-top值进行定位,且子元素设置的margin-top无效
-	  父亲设置 :
-	    1.position:absolute 
-	    2.display:inline-block  
-	    3.float:left/right
-	    4.overflow:hidden    
-	    5.border-top:     
-	    6.padding-top:
-	    此方法会引起新的问题,并不是实际解决而是弥补,视情况选择方法
-	2.兄弟之间
-	  两个相邻的div设置margin-left和margin-right,margin会累加;设置margin-top和margin-bottom,margin则会取其中一最大值
-	  在一个总BFC内两个子元素产生外边距合并，此时给其中一个再嵌套一个父元素盒子，使其处于不同辈分。这样两个盒子就不再处于同一个BFC下了。(注：再嵌套的父盒子需加“overflow：hidden”)
+    触发盒子的bfc,即解决margin塌陷问题,给父元素加上以下其一元素：
+      1.position:absolute 
+      2.display:inline-block  
+      3.float:left/right
+      4.overflow:hidden    
+      5.border-top:     
+      6.padding-top:
+      此方法会引起新的问题,并不是实际解决而是弥补,视情况选择方法
+  2.兄弟之间
+    两个相邻的div设置margin-left和margin-right,margin会累加;设置margin-top和margin-bottom,margin则会取其中一最大值
+    在一个总BFC内两个子元素产生外边距合并，此时给其中一个再嵌套一个父元素盒子，使其处于不同辈分。这样两个盒子就不再处于同一个BFC下了。(注：再嵌套的父盒子需加“overflow：hidden”)
 
+第4节:高度塌陷
+  由于父元素中的子元素设置了浮动属性造成父元素高度塌陷(即父元素高度为零)
+  解决办法:
+    1.在子元素末尾添加一个块级元素且清除其左右浮动
+    2.利用伪元素配合content属性在父元素中添加元素 样式如下 
+    parent:after{content:'';display:block;clear:both}
+    伪元素是行级元素，要设置宽高需将其改为块级元素,只有块级元素才能清除浮动
 
-第4节:大纲规范算法
+第5节:大纲规范算法
 	1.section标签中至少包含一个h1~h6
 	2.如果是页面布局且不是header、footer之类的专属区域,都应该使用div
 	3.body nav section都是需要有标题才规范 header div 则不需要
 	4.nav无标题也合理,但最好添加然后display将其隐藏就不会破坏布局
 
-
-第5节:meta标签viewport的使用
+第6节:meta标签viewport的使用
 	1.使用方法：name="viewport" content="以下的属性，中间用逗号隔开"
 	2.width=device-width 宽度定义为设备宽度
 	3.initial-scale 初始缩放比例
@@ -883,259 +907,162 @@ CSS部分
 	5.minimum-scale 允许用户缩放到的最小比例
 	6.user-scalable: yes/no 用户是否可以手动缩放
 
-第6节:
+第7节:
 	1.CSS3滤镜: filter:函数()
 	  filter:blur(5px) 模糊
 	  filter:contrast(200%) 对比度...
 	2.calc函数:
 	  calc(100% +-/* px) 即设置盒子宽度时可用此函数使子盒子始终小于父盒子一定的数值(百分比和四则运算符和px之间均需空格隔开)
-	3.实用工具:
+  3.@规则：
+    @charSet 设置样式表的编码 如“@charSet 'utf-8';”
+    @import  导入其他样式文件 如在HTML中只link一个index.css,而index中可导入“@import 'reset.css'”
+    @media   媒体查询,查询用户使用的何种设备以及设备的大小
+    @font-face 自定义字体
+  4.base标签:
+    一个页面中只能用一个base标签,标签放在head中
+    base作用:为a标签设置基础样式
+    用法:如<base target="_blank" href="http://www.baidu."> 
+      则页面内的所有a标签都不必再写target属性,且写“href”时只需写“baidu.”后面的地址即可
+	5.实用工具:
 	  “W3C统一验证工具” 可验证CSS代码是否合格
 	  “站长之家-css格式化” 可解压缩CSS代码
 	  制作facvion图标：png图片通过比特虫转为ico格式放在项目根目录下，通过“link rel="shortcut icon" ”引入
-	4.网站TDK三大标签SEO优化:
+	6.网站TDK三大标签SEO优化:
 	  SEO(search Engine Optimization):搜索引擎优化，利用引擎规则提高网站排名方式
 	  T即title 网站名-网站介绍
 	  D即description 如<meta name="description" content="网站主要做啥">
 	  K即keywords 如<meta name="keywords" content="网站主要产品逗号分隔产品">
-	5.a链接点击后不跳转“href="javascript:;"”
+	7.a链接点击后不跳转“href="javascript:;"”
 	  有“inline-block”的地方通常有“vertical-align:middle”使文字与其他元素居中对齐
 	  结构比样式更重要
 	  优先使用ID选择器,其查找效率更高  使用Class选择器,选择器前最好加上元素标签
 
-
-第7节:小技巧
+第8节:小技巧
 	1.做三角形:
-	  四个三角形均分一个盒子：盒子宽高设置为0，单独设置四个边框，边框宽度为盒子宽度一半即可
+	  四个三角形均分一个盒子：盒子宽高设置为0，单独设置四个边框，边框宽度为所需宽度
 	  只显示1/2/3个三角形：将对应的上/下/左/右border宽设为0 (特殊状况 只显示一个时：需保留上下/左右，并将另一个颜色改为透明即可) 
 	  例：“border-left:50px solid transparent;border-right:50px solid red”
+    另一种做法:盒子宽高设为零,“border:50px solid transparent; border-left/right...”
+      即先将四个边框颜色改为透明,要哪个显示哪个即可
+
 	2.常见布局:
 	  1.浮动的li标签右边框和下一li左边框不重合 方法：“margin-left:-1px”使其重合
 	  2.鼠标经过li时显示其边框 
 		若li无相对定位“li:hover{position:relative;border:...}”解决当前li右边框被下一li左边框覆盖
 		若li有相对定位“li:hover{z-index:1;border:...}”提高当前li的层级
 
+  3.解决相邻两元素因换行产生空格问题：如<span>文本1</span><span>文本2</sapn>
+    "文本1"和“文本2”之间会有空格,空格大小由文字高度决定。因此将span的父元素font-size设置为0，再单独为span设置文字高度 注意：span同级元素也会受到其父元素字高为0的影响
 
-
-
-
-
-
-
-
-
-
-
-
-以下为未整理的语法:
-
-表格专题:
-  table对象集合：
+第十三章:表格与表单
+第1节:表格专题
+  1.table对象集合：
     rows:返回包含表格中所有行的数组 用法:tableObject.rows
     cells:返回包含表格中每行中所有单元格的数组 用法:tableObject.rows[i].cells
- 方法:
-  createCaption() 为表格创建一个caption元素
-  createFHead() 
-  createTFoot() 
-  deleteCaption()
-  deleteTHead()
-  deleteTFoot()
-  insertRow(index) 在下标为index处新建一行(下标从0开始) 若省略参数则默认在末尾添加
-  deleteRow(index) 必须指定参数否则无效  
-  insertCell(index) 在指定行index处插入一个空的单元格
-  deleteCell(index) 
+  2.方法:
+    createCaption() 为表格创建一个caption元素
+    createFHead() 
+    createTFoot() 
+    deleteCaption()
+    deleteTHead()
+    deleteTFoot()
+    insertRow(index) 在下标为index处新建一行(下标从0开始) 若省略参数则默认在末尾添加
+    deleteRow(index) 必须指定参数否则无效  
+    insertCell(index) 在指定行index处插入一个空的单元格
+    deleteCell(index) 
+
+第2节:form表单
+  1.常见的form表单访问方式:
+    document.getElementById('')
+    document.getElementsByTagName('form')[index]
+    document.forms[index]
+    document.forms[name]
+  2.form属性及方法
+    属性:id/name/target/method/action/length 用法:formname.id
+    formname.elements 表单中所有控件的集合
+    formname.elements[index] 访问表单中的某个控件
+  3.form事件句柄
+    onsubmit 提交表单之前调用 (即在提交表单之前调用函数,如果函数结果满足要求则提交表单,否则不提交) 
+    onreset 重置表单元素之前调用
+    注:提交按钮需“type=submit”
+    例:
+    <form action="#" onsubmit='return cofi()'>
+      姓名<input type="text"> 
+      <input type="submit" value="提交">
+    </form>
+    <script>
+      function cofi() {
+        if (confirm('确认提交？')) {} 
+      }
+    </script>
+  4.事件:
+    oncopy 用户复制时触发此事件 
+      inputname.oncopy=fun(){ ... return false} 函数中“return false”则会禁止复制
+    onpaste 粘贴
+    oncut 剪切
+    oncontextmenu 整个文档 函数中“return false”则会禁止右键查看源代码
+    例:
+    <form action="#" name="form1">
+      <input type="text" name="copy" value="禁止复制和粘贴">
+      <input type="text" name="paste">
+    </form>
+    <script>
+      var copy=document.form1.copy;
+      copy.oncopy=function () {
+        alert('确定复制？');
+      }
+    </script>
+  5.单行文本框
+    text对象方法:
+    blur()文本域上移开焦点
+    focus()
+    select()
+    例:inputname.focus()
+  6.下拉列表Select属性:
+    length(设为0可将所有删除)/multiple/size/selectedIndex
+    selectname.options 所有option的集合
+    创建option方法: new Option(text,value,true,true) 后面两个true表示默认被选中和有效
+    方法：
+      selectname.add(obj,index) index省略则添加在末尾,否则添加在index处
+      selectname.remove(index) 
+      focus()
 
 
-form表单:
-
-常见的form表单访问方式:
-1.document.getElementById('')
-2.document.getElementsByTagName('form')[index]
-3.document.forms[index]
-4.document.forms[name]
-
-form属性及方法
-formname.elements 表单中所有控件的集合
-formname.elements[index] 访问表单中的某个控件
-属性:
-id/name/target/method/action/length 用法:formname.id
-
-form事件句柄
-onsubmit 提交表单之前调用 (即在提交表单之前调用函数,如果函数结果满足要求则提交表单,否则不提交) 
-onreset 重置表单元素之前调用
-注:提交按钮需“type=submit”
-例:
-<form action="#" onsubmit='return cofi()'>
-  姓名<input type="text"> 
-  <input type="submit" value="提交">
-</form>
-<script>
-  function cofi() {
-    if (confirm('确认提交？')) {} 
-  }
-</script>
-
-事件:
-oncopy 用户复制时触发此事件 inputname.oncopy=fun(){ ... return false} 函数中“return false”则会禁止复制
-onpaste 粘贴
-oncut 剪切
-oncontextmenu 整个文档 函数中“return false”则会禁止右键查看源代码
-
-例:
-<form action="#" name="form1">
-  <input type="text" name="copy" value="禁止复制和粘贴">
-  <input type="text" name="paste">
-</form>
-<script>
-  var copy=document.form1.copy;
-  copy.oncopy=function () {
-    alert('确定复制？');
-  }
-</script>
-
-
-
-单行文本框:
-text对象方法:
-blur()文本域上移开焦点
-focus()
-select()
-例:inputname.focus()
-
-
-下拉列表Select属性:
-length(设为0可将所有删除)/multiple/size/selectedIndex
-selectname.options 所有option的集合
-创建option方法: new Option(text,value,true,true) 后面两个true表示默认被选中和有效
-方法：
-  selectname.add(obj,index) index省略则添加在末尾,否则添加在index处
-  selectname.remove(index) 
-  focus()
-
-
-
-
-unicode 国际编码
-shell 内核   主流浏览器与对应内核
-  IE trident  Firefox Gecko     Google chrome     Safari Webkit    Opera Presto 
-UTF-8 unicode的升级版 Universal Character Set/Unicode Transformation Format）是针对Unicode的一种可变长度字符编码
-h标签：分段 更改字体大小 字体加粗
-div换行 span不会换行 充当容器使页面更加结构化
-空格：含义是文本分隔符
-HTML编码：以'&'开头以';'结尾，这是编码形式  如&nbsp; 含义就是空格
-  常用的编码就3个 “<” “>”和空格   less than缩写lt &lt;打印出来就是小于号  great than &gt;打印出来就是大于
-有序列表类型只有五种：type="1/a/A/i/I"
-img属性：alt图片占位符 title图片提示符
-a标签： href 全称hyperText reference  超文本引用
-ol(order list) ul(unorder list)
-
-定位position:
-  absolute 脱离原来位置进行定位,后面的元素会填补它的原位 (相当于新建了一个图层) (层模型)
-      以最近的有定位的父级为标杆进行定位,若父爷级都无定位则以文档进行定位
-  relative 保留原来位置进行定位,即后面的元素不会填补它的原位 且它现在的位置是以它的原位        为原点进行定位
-  经验:用relative作为标杆,用absolute进行定位 好处:父级作为标杆,与父级同一级的元素不会上浮,     即不会影响到后面的元素,此时就可在父级元素里进行随意定位
-
-  高度塌陷：由于父元素中的子元素设置了浮动属性造成父元素高度塌陷
-  解决办法:1.在子元素末尾添加一个块级元素且清除其左右浮动
-          2.利用伪元素配合content属性在父元素中添加元素 样式如下 
-          parent:after{content:'';display:block;clear:both}
-          伪元素是行级元素，要设置宽高需将其改为块级元素,只有块级元素才能清除浮动
-
-  
-
-  margin塌陷：
-  1.父子之间：子元素设置的margin-top值比父元素的margin-top值大时,会造成父元素以子元素margin-top值进行定位,且子元素设置的margin-top无效
-  bfc     全称Block Formatting Context
-  触发盒子的bfc,即解决margin塌陷问题,给父元素加上以下其一元素：
-    1.position:absolute
-    2.display:inline-block
-    3.float:left/right
-    4.overflow:hidden
-
-    5.border-top:
-    6.padding-top:
-    注：此方法会引起新的问题,并不是实际解决而是弥补,视情况选择四种方法
-  2.兄弟之间：两个相邻的div设置margin-left和margin-right,margin会累加;设置margin-top和margin-bottom,margin则会取其中一最大值
-  触发bfc后,bfc内部元素即使浮动也不会影响外部,同理外部也影响不到内部
-
-  设置了position：absolute和float属性，其属性会自动转换为inline-block
-
-
-文本属性：带有inline属性
-
-浮动元素产生浮动流,块级元素会占据浮动元素原来的位置而有bfc属性和文本属性的则不受影响
-
-
-
-行级块元素或文本类元素包含文本，外面的文字就会和里面的文字底对齐；若无文本则和元素底对齐
-
-h1:Logo,h2:副标题,h3:版块标题,h4:版块内容标题,h5、h6:版块嵌套中的版块使用
-
-划分结构：自上而下，从左到右，以行为单位，尽量把内容保存在一行当中
-划分依据：内容 颜色块 边框 间距
-字体不同默认行高则不同,故需重置行高
-行高写法：normal/1.5/em/px/% 共5种其中只有px为固定值，其他均为相对值
-由于继承特性，行高写时最好用数字表示
-
-@规则：
-  @charSet 设置样式表的编码 如“@charSet 'utf-8';”
-  @import  导入其他样式文件 如在HTML中只link一个index.css,而index中可导入“@import 'reset.css'”
-  @media   媒体查询,查询用户使用的何种设备以及设备的大小
-  @font-face 自定义字体
-base标签:
-  一个页面中只能用一个base标签,标签放在head中
-  base作用:为a标签设置基础样式
-  用法：如<base target="_blank" href="http://www.baidu."> 则页面内的所有a标签都不必再写target属性,且写“href”时只需写“baidu.”后面的地址即可
-
-解决相邻两元素因换行产生空格问题：如<span>文本1</span><span>文本2</sapn>
-  "文本1"和“文本2”之间会有空格,空格大小由文字高度决定。因此将span的父元素font-size设置为0，再单独为span设置文字高度 注意：span同级元素也会受到其父元素字高为0的影响
-
-<!-- 品优购 -->
-加了定位的元素会转换为行内块元素
-
-
-
-
-div默认宽度等同屏幕宽，需添加宽度才能给它加左右外边距
-列表去掉圆点：list-style  超链接去掉下划线：text-decoration
-li标签可定义宽高 使之一行排列增加浮动即可
-datalist属性 value值若和标签值不同，google浏览器中会将value值和标签值都显示出来,firefox则只显示标签值
-
-form中如果添加了multiple属性,select中会显示多个option内容 如：
-<form action="" >
-  <select name="" id="" multiple="">
-    <optgroup label="HTML5系列">
-      <option value="">HTML</option>
-      <option value="">CSS</option>
-    </optgroup>
-  </select>
-  <select name="" id="">
-    <optgroup label="HTML系列">
-      <option value="">HTML</option>
-      <option value="">CSS</option>
-    </optgroup>
-  </select>
-</form>
-
-<textarea placeholder="12">34</textarea>测试发现 当无placeholder时：firefox不显示任何数字,google和360显示34，当有时显示12
-
-表单重写属性
-  <form action="http://www.baidu.com">
-    input
-  </form>
-
-E[att~="val"]:选择具有att属性且属性值有多个，其中一个值为val的E元素
-<input type="text" value="郎君" style="padding: 40px 50px 60px;width: 200px">
-
-<input type="text" value="郎君" style="padding: 40px 50px 60px">
-input[style~="60px"]{background:yellow;} 此css效果对第一种无效，因为第一种包含分号和width，这种选择器对复合属性应该无效，对单个属性才有效果
-
-
-ui伪类选择器 E:target
-  <a href="#asd">例子</a>
-  .....
-  <a id="asd">例子所链接的内容</a>
-  css:  a:target{}
-
+第十四章:移动端
+1.视口:浏览器显示页面内容的屏幕区域,又可分为布局、视觉和理想视口
+  布局视口(layout viewport):用于解决早期PC端能在移动端显示的问题,将整个网页全显示,一般元素看上去很小,可通过手动缩放网页
+  视觉视口(view viewport):用户正在看到的网站的区域(可能看到的只是部分网页)
+  理想视口(ideal viewport):对设备而言最理想的视口尺寸,即布局视口和设备宽度相同 通过手动写meta视口标签通知浏览器操作
+  vh:视口高度 100vh即代表整个视口大小 50vh即为视口的一半
+2.meta视口标签:
+  标准写法:
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  initial-scale:初始缩放比,即刚打开时的页面
+  user-scalable:用户是否可缩放 yes/no(或1/0)
+3.物理像素比:
+  物理像素:即分辨率
+  PC端1px等于1个物理像素,但移动端不一定
+  1px能显示的物理像素点的个数称为物理像素比或屏幕像素比
+4.移动端开发的两种方式:
+  单独制作移动端页面(主流) 
+  响应式兼容PC端移动端(非主流):通过判断屏幕宽度来改变样式以适应不同终端 
+    缺点:制作麻烦需花费精力调试兼容性
+  通常情况下网址前加m可打开移动端 通过判断设备,如果是移动设备打开则跳到移动页面
+5.移动端浏览器:基本以webkit内核为主,因此只需考虑webkit兼容性问题,此外webkit支持H5及CSS3特性
+6.特殊样式:
+  盒模型: -webkitbox-sizing:border-box
+  高亮清除: -wenkit-tap-highlight-tcolor:transparent (如一个a链接点击时背景可能会高亮)
+  清除按钮和输入框的默认样式: -webkit-appearance:none
+  禁用页面长按时弹出菜单: -webkit-touch-callout:none (如图片长按时可能会弹出浏览器的菜单选项)
+7.常见布局方式:
+  1.单独制作移动端页面时:
+    1.流式布局(百分比布局):也叫非固定像素布局,盒子宽度设置成百分比来根据屏幕的宽度进行伸缩,不受固定像素限制,内容向两侧填充
+      max/min-width 用来限制盒子的缩放使内容不被挤变形
+    flex弹性布局(强烈推荐)
+    less+rem+媒体查询布局
+    混合布局
+  2.响应式页面兼容移动端:
+    媒体查询
+    bootstrap
 
 </pre>

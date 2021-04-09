@@ -47,9 +47,15 @@
       .once事件只触发一次
       键盘符:keyup/down. 如keyup.enter="way" 或 keyup.13="way"
         此外vue还提供了一些快捷名称如:“.enter .tab .delete”等
+      .native监听组件根元素的原生事件:
+        原生的“div button”等可直接进行“@click”
+        但不可直接对组件的点击进行监听,需写为“@click.native”
+    监听图片加载是否完成:@load="方法"
   9.v-if和v-show
     v-if:将元素从DOM树中移除或添加,有较高的切换性能消耗
+      惰性,如果初始条件为假则什么也不做,条件第一次为真时才局部编译
     v-show:切换元素display属性,有较高的初始渲染消耗
+      在任何条件下都会被编译并保留,只是简单的基于CSS切换
       不可用在“<template>上”
     如果元素频繁切换,最好用v-show    
     如果显示一次或永不显示,没必要将其渲染,最好用v-if
@@ -237,7 +243,7 @@
 第6节:父组件通过props属性向子组件传值
   1.传值步骤:
     子组件构造中写“props['变量1','变量2']
-    子组件标签中(如cpn)绑定“:变量1=数据1” 然后即可使用插值表达式获取数据
+    父组件标签中(如cpn)绑定“:变量1=数据1” 然后即可使用插值表达式获取数据
       注:表达式内为变量1而不能直接写数据,应通过变量1获取
     其实就是在子组件中定义一个变量,变量与对应的数据进行绑定即可使用
   2.props类型限制:
@@ -260,6 +266,7 @@
   3.驼峰标识:
     props定义时使用驼峰命名变量,则在模板标签里绑定数据时需改为短横同时大写改为小写
     浏览器解析元素时会把元素和属性都变成小写(HTML里不区分大小写),因此驼峰命名时要变为短横
+    注:当模板标签里绑定方法时无需更改,如“@titleClick="titleClick"”
   4.示例:
     <div id="app">
       <mycpn :test1='test' :test2='te' :test-message='testmes'></mycpn>
@@ -355,7 +362,7 @@
     如:console.log(this.$children[2].name)
     缺点:不常用 因为
   2.通过“this.$refs”拿到所有的子组件
-    得到的是个对象,因此需要给每个标签模板再添加一个属性“ref='keyName'”
+    得到的是个对象,因此需要给每个标签模板再添加一个属性“ref='keyName'”(ref既可绑定组件也可绑定普通元素)
     这样对象里就会有键名“keyName”和键值“子组件” 然后就可通过“keyName.”访问数据
     如:console.log(this.$refs.keyName.name)
     推荐使用此方法
@@ -407,12 +414,21 @@
 
 第10节:插槽
   1.基本使用:
-      模板之中使用“<slot></slot>”标签相当于预留了占位,组件标签中的内容会代替“slot”标签的位置
+      插槽:父组件提供了安插内容到子组件中的方法
+      子组件模板之中使用“<slot></slot>”标签相当于预留了占位,父组件引用子组件并在子组件中写其他元素时,所写内容会代替“slot”标签的位置
     默认值:  
-      “slot”标签中设置了元素,若组件标签中无元素则默认添加显示slot中的元素否则显示组件标签中的
+      “slot”标签中设置了元素,若父组件不在子组件中添加其他内容则默认显示slot中的元素否则显示所加内容
     多个值:
-      组件标签中有多个元素,可一起将一个slot标签的位置代替掉
-    注意:一个插槽就是一个位置,若一个模板中有多个slot而组件标签中虽只有一个元素但它会显示多次
+      父组件在子组件中虽然添加多个内容,但这些内容一起将子组件的一个slot标签的位置代替掉
+    注意:一个插槽就是一个位置,若子组件中有多个slot而组件标签中虽只有一个元素但它会显示多次
+    例: 
+      <parent>
+        <span>这是父组件中的普通内容正常显示</span>
+        <children>
+          <p>若父组件引用了无插槽的子组件时这里的内容相当于没写,不会显示</p>
+        </children>
+      </parent>
+      Vue.component('children',{template:`<div> <slot></slot> <p>子组件中的内容</p></div>`})
 
   2.具名插槽:
     “<slot name="na"></slot>”设置name属性后,组件内的元素添加“slot='na'”属性与其对应才可替换其位置否则slot位置若有默认元素则显示默认元素,若无默认元素则其位置什么也不显示
@@ -425,9 +441,20 @@
       写在子组件模板中的变量会去子组件中去查找而不会去父级作用域
     即父在父,子在子
 
-  4.作用域插槽: v-slot(老师讲的slot-cope已被废弃)具体用法百度 
+  4.作用域插槽: v-slot(老师讲的slot-scope已被废弃)具体用法百度 
     父组件改变子组件数据的渲染形式
     即内容仍为子组件的内容,但是由父组件来决定如何渲染
+
+    父组件中添加“scope="临时变量名"”属性,临时变量将保存子组件中的slot中的数据这样父组件就可访问普通的子slot
+    如: 
+    <parent scope="myscope">
+      <span>接受子组件中slot中的信息{{myscope.text}}</span>
+      <children>
+        <p>子组件</p>
+        <slot text="hellow"></slot>
+      </children>
+    </parent>
+
 
 
 第三章:webpack
@@ -530,10 +557,14 @@
       }]
     }
   5.案例中url-loader版本1.1.2 file-loader版本3.0.1
+  6.处理字体文件也类似:
+    {test:/\.(ttf|eot|svg|woff|woff2)/,use:'url-loader'}
 
 第6节:ES6语法转换为ES5
-  1.安装对应的loader npm i babel-loader@7.1.5 babel-core@6.26.3 babel-preset-es2015@6.24.1 
-    有时可能还需安装环境 即babel-preset-env 
+  1.安装对应的loader(有两套包,若失败就两套都装上）
+  npm i babel-loader@7.1.5 babel-core@6.26.3 babel-preset-es2015@6.24.1 -D (或将第三个换为babel-plugin-transform-runtime )
+    babel-preset-env babel-preset-stage-0 -D
+    
   2.配置代码如下:
   {
     test: /\.m?js$/, //处理ES6语法
@@ -546,7 +577,25 @@
       }
     ]
   }
+  3.根目录下新建“.babelIrc”文件(注:需按JSON格式来写)进行如下配置:
+    两种配置方法,首选第二个
+    {
+      "presets":["env","stage-0"],
+      "plugins":["transform-runtime"]
+    }
 
+    {
+      "presets": [
+        ["env", {
+          "modules": false,
+          "targets": {
+            "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
+          }
+        }],
+        "stage-2"
+      ],
+      "plugins": ["transform-vue-jsx", "transform-runtime"]
+    }
 第7节:引用vue
   1.vue编译时有两种方式 
     runtime-only 只能在“.vue”文件中使用template,JS文件中不可使用,编译时只识别render函数
@@ -615,7 +664,7 @@
     配置方式(同BannerPlugin):
       const uglifyjsWebpackPlugin = require('uglifyjs-webpack-plugin')
       plugins:[new uglifyjsWebpackPlugin()]
-  5.热刷新插件“webpack-dev-server”
+  5.热刷新(即自动打包)插件“webpack-dev-server”
     作用:运行一次映射命令以后就可启动使用热刷新(只需运行一次“npm run dev”,以后每次保存都会自动刷新,类似Google插件liveReload)
     安装方式: npm i webpack-dev-server@2.9.1 --save-dev -g
     配置方式:
@@ -653,13 +702,19 @@
   4.安装方式:npm i @vue/cli@3.2.1 -g 全局安装 (安装的是脚手架3)
     如果想用脚手架2,使用桥接工具将2的模板拉取下来即可: npm i @vue/cli-init@3.2.0 -g
   5.初始化项目:
-    脚手架2: vue init webpack projectname 注意:项目名称不为中文或大写字母
+    脚手架2: vue init webpack projectname 注意:项目名称不为中文或大写字母 
     脚手架3: vue create projectName
   6.运行项目:
     脚手架2: npm run dev 
     脚手架3: npm run serve
     可到package.config文件中查看或更改
-  6.手动关掉eslint:config文件夹下index.js文件中,将“useEslint”属性值改为false即可
+  7.手动关掉eslint:config文件夹下index.js文件中,将“useEslint”属性值改为false即可
+    vscode编辑器在进行代码格式化时会将单引号变为双引号,同时也会在花括号尾部加分号,但这两项与ESlint的要求冲突了,要以ESLint为准时:
+      在根目录下新建“.prettierrc”文件(此文件为json文件),在此文件中修改
+        格式化时不加分号："semi":false
+        用单引号代替双引号："singleQuote":true
+    函数名称和小括号之间不带空格,但ESLint要求带,将此要求禁用掉:
+      在ESLint配置文件“.eslintrc.js”中的rules中添加“'space-before-function-paren':0”
 
 第2节:runtime-compiler和runtime-only区别
   1.vue渲染过程 
@@ -673,6 +728,7 @@
       另一种用法: return createElement(cpn) cpn为已经创建的组件
     }
     核心:render函数调用了createElement函数直接创建元素或调用组件模板进行渲染,无需使用template再进行编译
+      注:render函数创建的元素会直接将页面中el指定的容器替换掉
 
 第3节:Vue-CLI3(脚手架3)
   1.与脚手架2的区别:
@@ -707,7 +763,8 @@
   路由为插件,所有插件都需“Vue.use(插件名)”来使用
   1.安装 “npm i vue-router@3.0.1 --save”
     导入路由并使用 “import VueRouter from 'vue-router” “Vue.use(VueRouter)”
-    创建路由实例并传入路由映射配置
+    创建路由实例并传入路由映射配置 “let router=new VueRouter()”
+    将路由挂载到实例上 “router”
   2.使用vue-router的步骤:
     创建路由组件
     配置路由映射
@@ -720,24 +777,24 @@
   5.更改路径模式:
     默认情况下路径为哈希模式,即路径带“#”号
     创建路由实例化时增加“mode:history”即可更改为H5的history模式将“#”去掉
-  6.router-link属性；
+  6.router-link属性；(这种叫做声明式导航)
     to 指定跳转的路径
     tag 指定渲染成哪种标签组件
     replace 不可通过页面上方的箭头后退或前进
     active-class 当“router-link”对应的路由匹配成功时会自动给当前元素添加类名“router-link-active”
       也可在路由实例化时设置“linkActiveClass:自定义类名” 然后给对应的“router-link”添加自定义类名即可
-  7.通过代码跳转而不通过“router-link”路径
+  7.通过代码跳转而不通过“router-link”路径(这种叫做编程式导航)
     给需要的按钮增加点击事件,methods写跳转代码即可
     如:
       <button @click='toHome'></button>
       <router-view></router-view>
       methods:{
-        thHome(){this.$router.push('/home')}
+        toHome(){this.$router.push('/home')}
       }
     知识点:自带的$router加push方法 (注:坑还是要占的)
 
 路由:
-  后端路由:对于普通网站来说所有的超链接都是url地址,所有的url地址都对于服务器上的资源
+  后端路由:对于普通网站来说所有的超链接都是url地址,所有的url地址都对应服务器上的资源
   前端路由:对于单页面应用程序来说,主要通过hash(即#号)实现不同页面之间的切换 这种由hash改变切换页面的方式叫前端路由
     hash特点:HTTP请求中不会包含hash内容,所以单页面程序内容跳转主要由hash实现
 
@@ -764,7 +821,6 @@
     在对象中设置路径配置“path:路径名,component:”  
     注:子组件的路径名直接写名字即可,无需拼接“/”及父组件名字
 
-
 第5节:路由传参方式
   1.动态获取路由: 
     $route:获取处于活跃状态路由的信息
@@ -779,6 +835,7 @@
   3.传参方式1:动态创建路由然后通过params方法
   4.传参方式2:使用类似node中的query方法
     $route.query.keyName
+  5.传参过程
 
 第6节:全局导航守卫
   1.导航守卫:vue-router提供的主要用来监听路由进入和离开的
@@ -796,7 +853,7 @@
         to:即将进入的目标路由  from:当前导航即将离开的路由对象  next:调用该方法后才能进入下一个钩子
       注:使用前置钩子函数必须主动调用next方法,使用后置钩子函数则无需写
   5.其他守卫:除全局守卫外,还有路由独享守卫及组件内的守卫等,具体看官网
-  6.从一个路由跳转到另一个路由后早跳转回来,记录其未跳之前的状态 
+  6.从一个路由跳转到另一个路由后再跳转回来,记录其未跳之前的状态 
     使用“beforeRouterLeave”钩子和“path”
       beforeRouterLeave(to,from,next){this.path=this.$router.path; next()}
     但一般使用currentIndex方法去解决这个问题而不使用钩子
@@ -819,7 +876,12 @@
   2.在build文件夹中的base配置文件中配置别名
     配置好后,在使用“import”引入其他文件时无需使用“../”等而直接可用别名代替配置的路径
     如果不是使用“import”引入,如图片的src路径,此时就需在别名前加“~”
-  3.promise：
+  3.脚手架3配别名:根目录下新建vue.config.js文件进行
+    module.exports = { configureWebpack: { resolve: { alias: {'assets': '@/assets',} } } }
+    图片在引入时“src='~@/assets/xxx'”
+    webpack将@解析为“/src” 再用“~”动态引入
+
+  4.promise：
     在构造的promise中进行网络请求,之后使用resolve,一旦使用resolve就会调用下面的then
     将要处理的代码写在then中
     这样就将二者分离开来使代码更优雅
@@ -866,6 +928,8 @@
       对应的mutations中的方法两个形参分别对应state和传递的数据
     mutations中的方法必须是同步的,不得进行异步操作否则数据更改但Devtools工具不能及时更新数据
     注:使用“mutations”中的方法目的是Vuex可以更明确的追踪state中的数据
+    mutations的唯一目的就是用来修改state中的状态,里面的每一个方法尽可能只做一件事
+
   5.actions属性类似于mutations,只是可以在此进行进行异步操作
 
   6.modules可对vuex中的属性再进行抽取
@@ -916,10 +980,38 @@
 
 
 
+案例补充的知识点:
+中央事件总线:某个后代组件触发了事件祖辈进行监听(用父子通信的话如果隔几代层层传递代码量较大)
+  后代触发事件: this.$bus.$emit('事件名',[可选参数])
+  祖辈监听: this.$bus.$on('事件名',([可选参数]) => {监听到后代组件触发了事件,在此进行处理所需事件})
+  注:默认“$bus”为空,因此需在“main.js”文件中添加“Vue.prototype.$bus = new Vue()”即可
+
+created()函数中不拿Dom
+
+所有的组件都有一个“$el”属性用来获取组成组件的元素
+
+当从一个页面跳转到另一个页面时,由于是路由管理,上个页面会被销毁,因此若要再跳转回去使之保持原状态则在那个组件外面包裹“keep-alive”
+
+图片懒加载:
+  1.安装vue-lazyload插件
+  2.main.js文件引入“import VueLazyload from 'vue-lazyload'”
+    并使用“'Vue use(VueLazyload,{可选参数})'”
+    可选参数示例: 占位图“loading:require('./img/show.png')” 即当图片未加载出时显示此张图片
+  3.原来图片绑定方式为“:src='XXX'”改为“v-lazy='XXX'”
 
 
 
 
+跨域使用tooken的方式维持状态
+不跨域则使用cookie在客户端或session在服务器端记录状态
+登录-tooken原理分析:
+  登录页面输入用户名和密码经过服务器验证后会生成该用户的tooken并返回,客户端存储token,后续所有的请求都携带该tooken发送请求,服务器验证tooken是否通过
+
+
+
+
+
+项目亮点:使用了图片懒加载
 
 
 以下为未整理归纳的语法:
@@ -979,6 +1071,40 @@ transition-group:在用列表实现过渡效果时,如果需要过渡的元素�
 
 history.go(-1) 去掉#号
 设置mode:histoty 也可去掉#号 mode模式默认哈希因此有#号
+
+
+
+
+vue组件中“style”中写“scoped”的目的:scoped代表作用域的意思,即style中的样式只在当前vue文件中有效,否则样式会作用在全局
+实现方式:scoped会为当前vue组件文件的根容器增加一个唯一的v-data-something属性标记,再在选择器时加上对应[v-data-something]
+缺点:由于只是通过属性限制,类还是原来的类,在其他地方对类设置样式仍可造成污染。
+    添加了属性选择器,对于CSS选择器的权重加重了。
+    外层组件包裹子组件,会给子组件的根节点添加data属性。在外层组件中无法修改子组件中除了根节点以外的节点的样式
+
+vue引用了第三方组件，需要在组件中局部修改第三方组件的样式，而又不想去除scoped属性造成组件之间的样式污染。此时只能通过“>>>”，穿透scoped。
+有些Sass 之类的预处理器无法正确解析“>>>”,可以使用“/deep/”(操作符“>>>”的别名)
+用法: 外层 /deep/ 第三方组件 {样式}
+例: .wrapper /deep/ .swiper-pagination-bullet-active{
+  background: #fff;
+}
+
+
+普通的style标签只支持普通的样式,如果要启用scss(sass)或less,需为其设置“lang='scss'”或“lang='less'”
+less/scss属于预处理语言,CSS预处理器为CSS增加一些编程的特性,无需考虑浏览器的兼容性问题。
+scss是sass的升级版
+
+
+
+
+
+
+
+
+
+
+src下lib文件夹里放置手动拷贝过来的第三方包
+node_modules是用npm装的第三方包
+
 
 
 

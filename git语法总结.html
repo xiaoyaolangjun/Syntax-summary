@@ -69,6 +69,7 @@
   1. “git init”将目录变为仓库
   2. “git add fileName” 添加文件到暂存区
       “git add fileName1 fileName2”可有选择性的添加
+      “git add .” 将所有文件添加到暂存区
   3. “git commit -m fileName” 文件提交到仓库(提交前必须暂存) 提交方式1,不写说明信息
      “git commit -m "注释信息"” 提交方式2 “-m后跟注释信息”
      “git commit” 提交方式3 进入编辑界面,编写注释信息
@@ -105,6 +106,8 @@
   3.“git branch branchName ” 在当前提交对象上创建分支
   4.“git checkout branchName” 切换分支
     切换分支时,当前分支一定得是已提交状态,否则此分支上未提交的暂存会被带到另一分支上造成污染
+    git checkout -b branchname 创建一个新分支并切换到这里
+      若忘记创建分支,当在主分支上写好代码后可将其迁移到此分支再进行提交
   5.“git branch -d branchName” 删除空的或已被合并的分支
     注:不可删除当前所在的分支,应切换到别的分支上时再去删除
   6.“git branch -D branchName” 强制删除分支
@@ -159,7 +162,14 @@
 第5节:远程操作
   “git remote -v” 查看远程地址
   1.“git remote add [别名] [远程仓库地址]” 添加新的远程仓库(并为其起别名)
+    如:“git remote add origin git地址”
   2.“git push [别名] [分支]” 推送本地仓库到远程仓库(分支可为主分支master或其他分支)
+    如:“git push -u origin master” (即将本地的master分支推送到远程的origin仓库中,若要推送其他分支可将master改为其他分支名)
+    推送过程:
+      git remote add origin(别名) XXXX(远程仓库地址)
+      第一次推送时：git push -u origin master (-u是指定origin为默认主分支)
+      之后推送时若推送主分支只需：git push origin master(或直接git push)
+    注：代码写完远程推送时先将分支提交推送到远程,再切换到主分支上并将刚才的分支进行合并,再将主分支推送到远程
   3.“git clone [远程仓库地址]” 克隆远程仓库
     效果:
       把远程仓库下载到本地
@@ -180,6 +190,9 @@
     推送时,一般都是pull再push
     因为如果不是基于Github远程库的最新版所做的修改则不能推送,必须先拉取
     比如两个人同时拉取后同时推送就会冲突,应为A推送后B先拉取再推送
+
+
+
 
 第6节:打tag标签
   标签:
